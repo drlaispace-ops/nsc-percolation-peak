@@ -1,0 +1,63 @@
+{
+ "meta": {
+  "time": "2026-11-13T16:40:06",
+  "script": "p1_3_snapshots.py",
+  "git_commit": "e80f33d3c0c2beaa6098cd12079c4e28e1a28bac",
+  "git_dirty": false,
+  "script_sha256": "3b0b5179dcbc6c48f3788393e1fd63516d467780cbe8ccc0e232e41722b75320",
+  "python": "3.12.14",
+  "machine": "macOS-26.6.2-arm64-arm-64bit",
+  "versions": {
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "networkx": "3.7",
+   "numba": "0.67.0",
+   "torch": "2.15.0",
+   "torch_geometric": "2.8.1",
+   "scikit-learn": "1.9.1"
+  },
+  "params": {
+   "d": 2,
+   "L": 256,
+   "ps": [
+    0.46,
+    0.4957,
+    0.54
+   ],
+   "pstar_source": "p1_3_analysis.json: lattices['2D bond sq'].rows[L=256].all.p_star",
+   "npz": "results/P1/p1_3_snapshots_paper.npz"
+  },
+  "seeds": [
+   20261112
+  ]
+ },
+ "panels": [
+  {
+   "p": 0.46,
+   "P": 0.0260467529296875,
+   "nsc": 1.306351708773084,
+   "g_giant": 1.8944366688479062,
+   "g_rest": 1.2906243587151522,
+   "g_rest_nonisolated": 1.4934330812064587,
+   "max_sc": 3.9657828094886143
+  },
+  {
+   "p": 0.4957,
+   "P": 0.4083404541015625,
+   "nsc": 1.4458818083815062,
+   "g_giant": 1.7726823082530043,
+   "g_rest": 1.220336787696499,
+   "g_rest_nonisolated": 1.4635662040435418,
+   "max_sc": 3.6982844495398552
+  },
+  {
+   "p": 0.54,
+   "P": 0.870574951171875,
+   "nsc": 1.283904155312189,
+   "g_giant": 1.41389534091133,
+   "g_rest": 0.4095210966970748,
+   "g_rest_nonisolated": 0.8449423357296494,
+   "max_sc": 3.4532333835592794
+  }
+ ]
+}

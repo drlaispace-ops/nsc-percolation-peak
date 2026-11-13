@@ -1,0 +1,9 @@
+numpy==2.5.3
+scipy==1.18.1
+numba==0.67.0
+matplotlib==3.11.2
+networkx==3.7
+diptest==0.12.0
+pytest==9.2.0
+scikit-learn==1.9.1
+# optional (code/lib/nscfeat/pyg.py, not needed for the paper): torch==2.15.0, torch_geometric==2.8.1

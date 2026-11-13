@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+data/P1/*
+!data/P1/constants.csv
+paper/P1/figs/

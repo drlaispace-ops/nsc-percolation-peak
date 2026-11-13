@@ -1,0 +1,78 @@
+{
+ "meta": {
+  "time": "2026-11-06T16:04:24",
+  "script": "p1_10_bench.py",
+  "git_commit": "bf59b6b15d24b131116f020e53179cd625f95bc5",
+  "git_dirty": false,
+  "script_sha256": "977bd2f5bfb5928f2ff691a825339d288d425434bcce22ce3067ae0fa5adcc1d",
+  "python": "3.12.14",
+  "machine": "macOS-26.6.2-arm64-arm-64bit",
+  "versions": {
+   "numpy": "2.5.3",
+   "scipy": "1.18.1",
+   "networkx": "3.7",
+   "numba": "0.67.0",
+   "torch": "2.15.0",
+   "torch_geometric": "2.8.1",
+   "scikit-learn": "1.9.1"
+  },
+  "params": {
+   "threads": 4,
+   "tree": "рівномірне мічене"
+  },
+  "seeds": {
+   "entropy": 20261106
+  }
+ },
+ "rows": [
+  {
+   "n": 1000,
+   "height": 56,
+   "t_reroot": 0.0002791250008158386,
+   "t_bfs": 0.001611250001587905,
+   "max_abs_diff": 8.881784197001252e-16
+  },
+  {
+   "n": 3000,
+   "height": 143,
+   "t_reroot": 0.0015044999890960753,
+   "t_bfs": 0.012708166992524639,
+   "max_abs_diff": 4.440892098500626e-16
+  },
+  {
+   "n": 10000,
+   "height": 214,
+   "t_reroot": 0.00721920799696818,
+   "t_bfs": 0.15843862500332762,
+   "max_abs_diff": 8.881784197001252e-16
+  },
+  {
+   "n": 30000,
+   "height": 346,
+   "t_reroot": 0.04034620799939148,
+   "t_bfs": 1.771696209005313,
+   "max_abs_diff": 8.881784197001252e-16
+  },
+  {
+   "n": 100000,
+   "height": 1068,
+   "t_reroot": 0.3681585000013001,
+   "t_bfs": 31.299175249994732,
+   "max_abs_diff": 8.881784197001252e-16
+  },
+  {
+   "n": 300000,
+   "height": 1036,
+   "t_reroot": 1.405000500002643,
+   "t_bfs": null,
+   "max_abs_diff": null
+  },
+  {
+   "n": 1000000,
+   "height": 1833,
+   "t_reroot": 8.141881791001651,
+   "t_bfs": null,
+   "max_abs_diff": null
+  }
+ ]
+}
