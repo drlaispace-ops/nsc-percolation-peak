@@ -620,6 +620,85 @@ for col, (name, d, lim) in enumerate((("2D bond sq", 2, (-4, 6)), ("3D bond", 3,
 put("collapse.xstar", xstar, "p1_3_analysis.json: lattices.<решітка>.{pc,rows[].all.p_star}, meta.params.beta_nu; "
     "x* = (p* − pc)·L^(1/ν)")
 save(fig, "fig11_collapse.pdf")
+# ================================================================== Рис. 12: означення NodeSC на малому графі
+import networkx as nx  # noqa: E402
+from nsccore import node_sc as _node_sc  # noqa: E402
+from matplotlib.patches import Circle  # noqa: E402
+BF_EDGES = [(0, 1), (0, 2), (0, 3), (1, 2), (1, 4), (1, 5), (2, 6), (5, 6), (3, 7), (3, 8),
+            (4, 9), (6, 10), (7, 11), (8, 12), (11, 12), (10, 13)]
+BF_ANG = {0: 0, 1: 100, 2: 220, 3: 340, 4: 75, 5: 140, 6: 185, 7: 315, 8: 5, 9: 70, 10: 200, 11: 318, 12: 352,
+          13: 205}
+Gb = nx.Graph(BF_EDGES)
+dist = nx.single_source_shortest_path_length(Gb, 0)
+pos = {v: (dist[v] * np.cos(np.radians(BF_ANG[v])), dist[v] * np.sin(np.radians(BF_ANG[v]))) for v in Gb}
+rows_bf = []
+for k in range(1, max(dist.values()) + 1):
+    ball = [v for v in Gb if dist[v] <= k]
+    sk, bk = len(ball), Gb.subgraph(ball).number_of_edges()
+    mk = sk * (sk - 1) // 2
+    rows_bf.append(dict(k=k, s=sk, b=bk, m=mk, p=bk / mk, delta=bk / mk * (1 - bk / mk)))
+nodesc0 = sum(r["delta"] for r in rows_bf)
+chk = float(_node_sc(Gb)[list(Gb.nodes).index(0)])
+assert abs(chk - nodesc0) < 1e-12, (chk, nodesc0)
+put("bfs_example", {"rows": rows_bf, "NodeSC": nodesc0, "check_nsccore": chk},
+    "make_figures.py: BF_EDGES (рис. 12), BFS від вузла 0; перевірка — code/lib/nsccore.node_sc")
+LAYER_COL = ["#0b0b0b", "#2a78d6", "#1baf7a", "#eb6834", "#7b5cd6"]
+fig = plt.figure(figsize=(W2, 2.55), constrained_layout=True)
+gs = fig.add_gridspec(1, 3, width_ratios=[1.25, 0.9, 1.15])
+a, b, c = (fig.add_subplot(gs[0, j]) for j in range(3))
+for k in range(len(rows_bf), 0, -1):          # вкладені кулі
+    a.add_patch(Circle((0, 0), k + 0.42, facecolor=LAYER_COL[k], alpha=0.07, edgecolor=LAYER_COL[k], lw=0.6,
+                       ls="--", zorder=0))
+    a.text((k + 0.42) * np.cos(np.radians(262)), (k + 0.42) * np.sin(np.radians(262)) + 0.12, f"$B_{k}$",
+           fontsize=7.5, color=LAYER_COL[k], ha="center", va="bottom")
+for u, v in Gb.edges:
+    a.plot(*zip(pos[u], pos[v]), color=MUTED, lw=0.9, zorder=1)
+for v in Gb:
+    a.plot(*pos[v], "o", ms=6.5 if v == 0 else 5, color=LAYER_COL[dist[v]], mec="white", mew=0.6, zorder=3)
+a.text(pos[0][0] + 0.3, pos[0][1] + 0.05, "$i$", fontsize=9, ha="left", va="bottom", color=INK, zorder=4)
+a.set_aspect("equal")
+a.set_xlim(-4.75, 4.75)
+a.set_ylim(-4.75, 4.75)
+a.axis("off")
+panel(a, "a")
+# (b) пари вузлів кулі B_1: вага 1 — ребро є, 0 — немає
+r1 = rows_bf[0]
+b1 = [v for v in Gb if dist[v] <= 1]
+for j, u in enumerate(b1):
+    for v in b1[j + 1:]:
+        on = Gb.has_edge(u, v)
+        (x0, y0), (x1, y1) = pos[u], pos[v]
+        b.plot([x0, x1], [y0, y1], color=INK if on else "#b9b7b1", lw=1.3 if on else 1.0, ls="-" if on else (0, (3, 2)),
+               zorder=1)
+        b.text((x0 + x1) / 2, (y0 + y1) / 2, "1" if on else "0", fontsize=7.5, ha="center", va="center",
+               color=INK if on else MUTED, bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none"), zorder=2)
+for v in b1:
+    b.plot(*pos[v], "o", ms=7 if v == 0 else 6, color=LAYER_COL[dist[v]], mec="white", mew=0.6, zorder=3)
+b.text(0, -1.55, f"$s_1={r1['s']}$, $b_1={r1['b']}$, $m_1={r1['m']}$\n"
+       f"$p_1={r1['b']}/{r1['m']}$, $\\delta_1=p_1(1-p_1)={r1['delta']:.3f}$", fontsize=7, ha="center", va="top")
+b.set_aspect("equal")
+b.set_xlim(-1.45, 1.45)
+b.set_ylim(-2.35, 1.35)
+b.axis("off")
+b.set_title("пари вузлів кулі $B_1$", fontsize=8)
+panel(b, "b")
+# (c) внески δ_k
+ks = [r["k"] for r in rows_bf]
+c.bar(ks, [r["delta"] for r in rows_bf], color=[LAYER_COL[k] for k in ks], width=0.62, alpha=0.85)
+for r in rows_bf:
+    c.text(r["k"], r["delta"] + 0.006, f"{r['delta']:.3f}", ha="center", va="bottom", fontsize=6.5)
+    c.text(r["k"], -0.035, f"{r['s']}\n{r['b']}\n{r['p']:.3f}", ha="center", va="top", fontsize=6.3, color=MUTED)
+c.text(0.35, -0.035, "$s_k$\n$b_k$\n$p_k$", ha="right", va="top", fontsize=6.3, color=MUTED)
+c.set_xticks(ks)
+c.set_xticklabels([f"$k={k}$" for k in ks])
+c.tick_params(axis="x", length=0, pad=1)
+c.set_ylim(0, 0.27)
+c.set_xlim(0.35, len(ks) + 0.5)
+c.set_ylabel(r"$\delta_k=p_k(1-p_k)$")
+c.set_title(f"NodeSC$_i=\\sum_k\\delta_k={nodesc0:.3f}$", fontsize=8)
+c.xaxis.set_label_position("top")
+panel(c, "c")
+save(fig, "fig12_bfs.pdf")
 # числа рис. 10–11 додано після першого запису numbers.json — перезаписати
 with open(OUT / "numbers.json", "w") as f:
     json.dump(NUM, f, ensure_ascii=False, indent=1)
